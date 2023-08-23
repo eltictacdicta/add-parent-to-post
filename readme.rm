@@ -1,0 +1,4 @@
+Pequeña modificacion del plugin:
+https://puvox.software/software/wordpress-plugins/?plugin=add-hierarchy-parent-to-post
+Añadiendo posibilidad de hacer busquedas en el select. Para ello uso la siguiente librería:
+https://github.com/Choices-js/Choices
