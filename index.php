@@ -4,8 +4,8 @@
  * Description:		Plugin adds "parent & hierarchy" functionality to posts.
  * Text Domain:		add-hierarchy-parent-to-post
  * Domain Path:		/languages
- * Version:		    1
- * Plugin URI:		https://puvox.software/software/wordpress-plugins/?plugin=add-hierarchy-parent-to-post
+ * Version:		    1,1
+ * Plugin URI:		https://github.com/eltictacdicta/add-hierarchy-parent-to-post/archive/refs/heads/main.zip
  * Contributors: 	puvoxsoftware,ttodua
  * Author:		    Misterdigital
  * Author URI:		https://misterdigital.es

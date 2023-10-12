@@ -4981,24 +4981,28 @@ if (!class_exists('\\Puvox\\library'))
 				}
 			}
 		}
-		echo '
-		<link
-  			rel="stylesheet"
-  			href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css"
-		/>
-		<link
-		rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
-	  	/>';
-		echo '<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-		<script>
-			document.addEventListener("DOMContentLoaded", function(event) {
-				const element = document.querySelector("#parent_id");
-				const choices = new Choices(element);
-			});
-			
-		</script>
-		';
+		if($current_screen=="admin")
+		{
+			echo '
+			<link
+				rel="stylesheet"
+				href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css"
+			/>
+			<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+			/>';
+			echo '<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+			<script>
+				document.addEventListener("DOMContentLoaded", function(event) {
+					const element = document.querySelector("#parent_id");
+					const choices = new Choices(element);
+				});
+				
+			</script>
+			';
+		}
+		
 
 	}
 
