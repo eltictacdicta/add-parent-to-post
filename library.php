@@ -4986,23 +4986,17 @@ if (!class_exists('\\Puvox\\library'))
 			echo '
 			<link
 				rel="stylesheet"
-				href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/base.min.css"
-			/>
-			<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+				href="'.plugin_dir_url(__FILE__).'/assets/css/nice-select2.css"
 			/>';
-			echo '<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+			echo '<script src="'.plugin_dir_url(__FILE__).'/assets/js/nice-select2.js"></script>
 			<script>
 				document.addEventListener("DOMContentLoaded", function(event) {
-					const element = document.querySelector("#parent_id");
-					const choices = new Choices(element);
+					NiceSelect.bind(document.getElementById("parent_id"), {searchable: true, placeholder: "Selecciona una opción"});
 				});
 				
 			</script>
 			';
 		}
-		
 
 	}
 

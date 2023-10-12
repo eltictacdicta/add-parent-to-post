@@ -2,11 +2,11 @@
 /*
  * Plugin Name:		Añadir Jerarquía (padre) al post
  * Description:		Plugin adds "parent & hierarchy" functionality to posts.
- * Text Domain:		add-hierarchy-parent-to-post
+ * Text Domain:		anadir-jerarquia-padre-al-post
  * Domain Path:		/languages
- * Version:		    1,1
+ * Version:		    1.1
  * Plugin URI:		https://github.com/eltictacdicta/add-hierarchy-parent-to-post/archive/refs/heads/main.zip
- * Contributors: 	puvoxsoftware,ttodua
+ * Contributors: 	puvoxsoftware,ttodua,misterdigital
  * Author:		    Misterdigital
  * Author URI:		https://misterdigital.es
  * License:		    GPL-3.0
