@@ -61,8 +61,28 @@ namespace AddHierarchyParentToPost
 	{
 		add_action( 'registered_post_type', 				[$this, 'enable_hierarchy_fields'], 123, 2);
 		add_filter( 'post_type_labels_'.$post_type='post',  [$this, 'enable_hierarchy_fields_for_js'], 11, 2);
-		add_filter('the_content', 'mostrar_migasdepan');
-		
+		add_filter('the_content', [$this, 'mostrar_migasdepan'], 11, 2 );
+		add_action( 'wp_head', function () { ?>
+			<style>
+				.migasdepan p {
+					text-align: center;
+					background-color: #eee;
+					padding-top: 5px;
+					padding-left: 10px;
+					padding-bottom: 5px;
+				}
+			
+				.migasdepan a:link{
+					text-decoration:none;
+				}
+			
+				.migasdepan .last{
+					font-weight: bold;
+				}
+			
+				
+			</style>
+			<?php } );  
 		$this->cpt_as_parent_init();
 	}
  
@@ -70,31 +90,11 @@ namespace AddHierarchyParentToPost
 	// ============================================================================================================== //
 
 
-	add_action( 'wp_head', function () { ?>
-		<style>
-			.migasdepan p {
-				text-align: center;
-				background-color: #eee;
-				padding-top: 5px;
-				padding-left: 10px;
-				padding-bottom: 5px;
-			}
-		
-			.migasdepan a:link{
-				text-decoration:none;
-			}
-		
-			.migasdepan .last{
-				font-weight: bold;
-			}
-		
-			
-		</style>
-		<?php } );  
+	
 		
 		
 		
-	function mostrar_migasdepan( $content ) {
+	public function mostrar_migasdepan( $content ) {
 		if (wp_get_post_parent_id(get_the_ID())) {
 			if (is_plugin_active('seo-by-rank-math/rank-math.php')) {
 				$custom_content = '<div class="migasdepan">'.do_shortcode( '[rank_math_breadcrumb]' ).'</div>';
