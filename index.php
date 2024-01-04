@@ -37,7 +37,7 @@ namespace AddHierarchyParentToPost
             'show_donation_popup'    => true, 
             'menu_pages'             => [
                 'first' =>[
-                    'title'           => 'Add Hierarchy (parent) to post', 
+                    'title'           => 'Añadir Jerarquía (padre) al post', 
                     'default_managed' => 'singlesite',            // network | singlesite
                     'required_role'   => 'install_plugins',
                     'level'           => 'submenu',
@@ -49,7 +49,7 @@ namespace AddHierarchyParentToPost
 
 		$this->initial_user_options		= 
 		[	
-			'hierarchy_permalinks_too'	=> 1,
+			'hierarchy_permalinks_too'	=> 0,
 			'custom_post_types'			=> "post,",
 			'hierarchy_using' 			=> "query_post",  // "query_post"  or "modify_post_obj" or "rewrite" (worst case)
 			'other_cpts_as_parent' 		=> "", 
@@ -61,50 +61,56 @@ namespace AddHierarchyParentToPost
 	{
 		add_action( 'registered_post_type', 				[$this, 'enable_hierarchy_fields'], 123, 2);
 		add_filter( 'post_type_labels_'.$post_type='post',  [$this, 'enable_hierarchy_fields_for_js'], 11, 2);
-
-		if($this->opts['hierarchy_permalinks_too'])  {  
-			
-			//just example funcs into init
-			if(is_admin()) 
-				add_action('init',	[$this, 'init_action'], 777 );
-			
-			// change permalinks on front-end source links
-			add_filter('pre_post_link', [$this,'change_permalinks'], 8, 3 ); 
-			
-			// DIFFICULT PART:  making WP to recoginzed the hierarchied URL-STRUCTURE //
-			
-			// (modify_post_obj):  using "registered_post_type"
-			// ** "register_post_type_args" almost same as  "registered_post_type", but worse (the labels are set as "page" (see output: pastebin(dot)com/raw/iVahbbLw ). also, 'rewrite' gives error.  (See more details at: pastebin(dot)com/raw/0ujkRzLE )  .  Also, similar results to "reregister_post" so, i use only this version  ( `reregister_post` is worse than `modify_post_obj`. see: pastebin(dot)com/raw/9ZabSn0E )
-			if($this->opts['hierarchy_using'] == 'modify_post_obj'){
-				add_action('registered_post_type',	[$this, 'method__modify_post_obj'], 150 , 2);
-			}
-			
-			// (query_post):  using "pre_get_posts" 
-			elseif($this->opts['hierarchy_using'] == 'query_post'){
-				add_filter( 'pre_get_posts', [$this,'method__query'] , 888  ); 
-				add_action( 'registered_post_type', [$this, 'hierarchy_for_custom_post'], 90 , 2 );
-				//  $this->load_pro();
-			}
-			//(rewrite):  using "add_rewrite_rule" 
-			elseif($this->opts['hierarchy_using'] == 'rewrite'){
-				add_action('init', [$this, 'method__rewrite'], 150 );
-			}
-
-			//check if permalinks not enabled
-			add_action('current_screen', function(){
-				$screen = get_current_screen(); 
-				if ( $screen->base == 'post' ) {
-					$this->alert_if_not_pretty_permalinks();
-				}
-
-			} ); 
-		}
+		add_filter('the_content', 'mostrar_migasdepan');
 		
 		$this->cpt_as_parent_init();
 	}
  
 	// ============================================================================================================== //
 	// ============================================================================================================== //
+
+
+	add_action( 'wp_head', function () { ?>
+		<style>
+			.migasdepan p {
+				text-align: center;
+				background-color: #eee;
+				padding-top: 5px;
+				padding-left: 10px;
+				padding-bottom: 5px;
+			}
+		
+			.migasdepan a:link{
+				text-decoration:none;
+			}
+		
+			.migasdepan .last{
+				font-weight: bold;
+			}
+		
+			
+		</style>
+		<?php } );  
+		
+		
+		
+	function mostrar_migasdepan( $content ) {
+		if (wp_get_post_parent_id(get_the_ID())) {
+			if (is_plugin_active('seo-by-rank-math/rank-math.php')) {
+				$custom_content = '<div class="migasdepan">'.do_shortcode( '[rank_math_breadcrumb]' ).'</div>';
+			} elseif (is_plugin_active('wordpress-seo/wp-seo.php')) {
+				$custom_content = '<div class="migasdepan">'.do_shortcode( '[wpseo_breadcrumb]' ).'</div>';
+			} else {
+				$custom_content = '';
+			}
+			$custom_content .= $content;
+			return $custom_content;
+		} else {
+			return $content;
+		} 
+	}
+		
+		
 
 	public function deactivation_funcs($network_wide){ 	
 		if ( is_multisite() ) {  // && $network_wide 
@@ -451,7 +457,7 @@ namespace AddHierarchyParentToPost
 			//if form updated
 			if( $this->checkSubmission() ) 
 			{ 
-				$this->opts['hierarchy_permalinks_too']	= !empty($_POST[ $this->plugin_slug ]['hierarchy_permalinks_too']) ; 
+				$this->opts['hierarchy_permalinks_too']	= 0 ; //yo trabajo siempre sin url jerarquica con lo cual no doy esta opcion
 				$this->opts['hierarchy_using']			= sanitize_key($_POST[ $this->plugin_slug ]['hierarchy_using']) ; 
 				$this->opts['custom_post_types']		= trim(sanitize_text_field($_POST[ $this->plugin_slug ]['custom_post_types'])) ; 
 				$this->opts['other_cpts_as_parent']		= trim(sanitize_text_field($_POST[ $this->plugin_slug ]['other_cpts_as_parent'])) ; 
@@ -489,42 +495,7 @@ namespace AddHierarchyParentToPost
 					</td>
 				</tr>
 				
-				<tr class="def hierarchical">
-					<th scope="row">
-						<?php _e('Make post links hierarchied', 'add-hierarchy-parent-to-post'); ?>
-					</th>
-					<td>
-						<fieldset>
-							<div class="">
-								<p>
-									<label>
-										<input name="<?php echo $this->plugin_slug;?>[hierarchy_permalinks_too]" type="radio" value="0" <?php checked(!$this->opts['hierarchy_permalinks_too']); ?>><?php _e( 'No', 'add-hierarchy-parent-to-post' );?>
-									</label>
-									<label>
-										<input name="<?php echo $this->plugin_slug;?>[hierarchy_permalinks_too]" type="radio" value="1" <?php checked($this->opts['hierarchy_permalinks_too']); ?>><?php _e( 'Yes', 'add-hierarchy-parent-to-post' );?>
-									</label>
-								</p>
-								<p class="description">
-								<?php _e('Do you also want that hierarchied posts had hierarchied URL also? i.e. <code>site.com/parent/child</code> instead of <code>site.com/child</code>  (Note, in "Settings&gt;Permalinks" the structure should contain <code>%postname%</code>, otherwise this won\'t work).', 'add-hierarchy-parent-to-post'); ?>
-								</p>
-								<p class="displaced hierarchyMethodDesc">
-									<legend>
-										<?php _e( 'Which method should be used for that:', 'add-hierarchy-parent-to-post' );?> 
-									</legend>
-									<span class="MyLabelGroup">
-										<label <?php //$this->pro_field();?>><input name="<?php echo $this->plugin_slug;?>[hierarchy_using]" type="radio" value="query_post" <?php checked($this->opts['hierarchy_using'], 'query_post');?> /> <?php _e('Post Load', 'add-hierarchy-parent-to-post');?> <?php _e( '<b>(Recommended method)</b> - preferred way.', 'add-hierarchy-parent-to-post' );?></label>
-										<label> <input name="<?php echo $this->plugin_slug;?>[hierarchy_using]" type="radio" value="modify_post_obj" <?php checked($this->opts['hierarchy_using'], 'modify_post_obj');?> /> <?php _e('Query & Object Modification', 'add-hierarchy-parent-to-post');?> <?php _e( '<b>(Non-Recommended method)</b> This method is experimental and unstable, because "Rewrite Rules" are modified for post, which migh cause other links to break (like pages or categories, or their feed, rss, attachements or etc... All of side-affects are undefined at this moments).', 'add-hierarchy-parent-to-post' );?></label>
-									</span>
-								</p>
-							</div>
-							<div class="clearboth"></div>
-							<p class="description disabled_notice">
-								<?php //_e('UPDATE 12/01/2018<br/>Note,you see how limited capabilities does this plugin have. I couldn\'t find any better solution yet. So, for more reliability, you might also want to check <a href="https://wordpress.org/plugins/remove-base-slug-from-custom-post-type-url/" target="_blank">Remove Base Slug from Custom Post Type</a>, where you should create a new custom post type (name whatever you want) and then remove slug from that custom-post-type, and they will function like native "posts", but with better flexibility for hierarchy  (the only drawback of using custom post types instead of native "post" types, is that some kind of 3rd party themes and plugins developers doesnt always (unfortunately!) include the support for custom post types and they only support native "page" or "post". However, if that\s not a problem for your case, then that plugin will help you).', 'add-hierarchy-parent-to-post'); ?> 
-							</p>
-						</fieldset>
-					</td>
-				</tr>
-				
+				//quitado el campo de jerarquia de url
 				
 				
 				

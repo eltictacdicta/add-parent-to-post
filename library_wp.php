@@ -3760,7 +3760,7 @@ if (! class_exists('\\Puvox\\wp_plugin')) {
 		</script> 
 	</div>
 	
-	<?php $this->donations_trigger_popup(); ?>
+	<?php //$this->donations_trigger_popup(); ?>
 	<?php $this->notes_field(); ?>
 
 	<?php if ($external===true) echo '</div>'; ?>
