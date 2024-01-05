@@ -104,10 +104,36 @@ namespace AddHierarchyParentToPost
 					text-align: center;
 					color: #333;
 				}
+
 			</style>
 			<?php } );  
 		add_shortcode('mi_child_pages', [$this, 'mi_child_pages_mod'], 11, 2  );
+
 		$this->cpt_as_parent_init();
+		add_action('init', function () {
+            // Only execute script when user has access rights
+            if (!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
+                return;
+            }
+
+            // Only execute script when rich editing is enabled
+            if (get_user_option('rich_editing') !== 'true') {
+                return;
+            }
+
+            // Add the JS to the admin screen
+            add_filter('mce_external_plugins', function ($plugin_array) {
+                $file = plugin_dir_url(__FILE__) . '/assets/js/add-child-shortcode.js';
+                $plugin_array['cluster-child-button'] = $file;
+                return $plugin_array;
+            });
+
+            // Register the Note to the editor
+            add_filter('mce_buttons', function ($buttons) {
+                array_push($buttons, 'cluster-child-button');
+                return $buttons;
+            });
+        });
 	}
  
 	// ============================================================================================================== //
@@ -115,9 +141,11 @@ namespace AddHierarchyParentToPost
 
 
 	
-	public function mi_child_pages_mod() {
+	public function mi_child_pages_mod($atts) {
 		ob_start();
-	
+		$p = shortcode_atts( array (
+            'titulo' => ' Tambien te puede interesar:',
+        ), $atts );
 		$args = array(
 			'post_type'		=> 'post',
 			'post__not_in'  => array(get_the_ID()),
@@ -133,7 +161,7 @@ namespace AddHierarchyParentToPost
 		
 			//$count = 0;
 			echo '<div class="caja">';
-			echo '<p class="titulo-caja">Subcategorías</p>';
+			echo '<p class="titulo-caja">'.$p['titulo'].'</p>';
 
 			echo '<div style="display: flex; flex-wrap: wrap;">';
 			while ( $query->have_posts() ) : $query->the_post(); 
@@ -319,80 +347,6 @@ namespace AddHierarchyParentToPost
 		
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-		/*
-
-			// method 2: hierarchy posts work, pages break
-		//	public function method__reregister_post()	{  
-		//		$Type = 'post';
-		//		$post_obj = get_post_type_object($Type);
-		//		$args_existing = json_decode(json_encode($post_obj), true);
-		//		$args_new = $args_existing;
-		//		$args_new['has_archive']	= true; //
-		//		$args_new['query_var']		= 'post'; // 'post' or true
-		//		$args_new['rewrite']		= array('with_front'=>false, 'slug'=>'/'); //  /  'rewrite' => array("ep_mask"=>EP_PERMALINK ...) OR    'permalink_epmask'=>EP_PERMALINK, 
-		//
-		//		register_post_type( $Type, $args_new ); 
-				// register_post_type function : pastebin(dot)com/raw/3fjqYHPj
-		//		$this->add_rewrite_for_post();
-		//	}
-
-
-			public function method__rewrite(){
-
-				add_rewrite_rule( $reg = '([^/]*)/(.*)' ,  $match='index.php?name=$matches[2]',	$priority='top' );
-				$this->flush_rules_if_needed(__FILE__);
-				// pastebin(dot)com/raw/kvEXCqKQ
-				
-				//
-				//add_rewrite_rule($reg,  'index.php?name=$matches[2]',	'top' );
-				
-		//		'([^/]+)/?',   //([^/]+)          //([^/]*)/(.*)
-		//		add_rewrite_rule(   '([^/]*)/(.*)',     'index.php?name=$matches[2]',     'top'     );
-					
-				//$rules = get_option( 'rewrite_rules' );
-				// if(!is_admin()) {   var_dump($rules );  }
-				
-				
-				// check if our rules are not yet included
-				if ( false ){
-					if (! isset( $rules[$reg] ) ) { 
-						//	$this->update_option_CHOSEN('rewrite_rules_BACKUPED__AHPTP',  $rules );
-						// https://developer.wordpress.org/reference/functions/add_rewrite_tag/
-						add_rewrite_rule($reg,  'index.php?name=$matches[2]',	'top' );
-						//
-						//add_rewrite_rule('^\/(.*)(\/|?|#|)$', 'index.php?pagename=$matches[1]', 'top');
-						//add_rewrite_tag( '%postname%', '(.?.+?)', 'pagename=$matches[1]' );
-						flush_rewrite_rules();
-					}
-				}
-			
-					//these re defaults for new type
-					// './?$' => string 'index.php?post_type=post' (length=24)
-					//  './feed/(feed|rdf|rss|rss2|atom)/?$' => string 'index.php?post_type=post&feed=$matches[1]' (length=41)
-					//  './(feed|rdf|rss|rss2|atom)/?$' => string 'index.php?post_type=post&feed=$matches[1]' (length=41)
-					//  './page/([0-9]{1,})/?$' => string 'index.php?post_type=post&paged=$matches[1]' (length=42)
-			}	
-			
-			public function add_rewrite_for_post(){
-				add_rewrite_rule( $reg = '.+/([^/]+)/?$' ,  $match='index.php?name=$matches[1]',	$priority='top' );
-			}
-		*/
-
-	
-	
-	
 	
 	
 	// #############################################################
