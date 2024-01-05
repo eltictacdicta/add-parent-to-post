@@ -5,7 +5,7 @@
  * Text Domain:		anadir-jerarquia-padre-al-post
  * Domain Path:		/languages
  * Version:		    1.1
- * Plugin URI:		https://github.com/eltictacdicta/add-hierarchy-parent-to-post/archive/refs/heads/main.zip
+ * Plugin URI:		https://github.com/eltictacdicta/add-parent-to-post/archive/refs/heads/main.zip
  * Contributors: 	puvoxsoftware,ttodua,misterdigital
  * Author:		    Misterdigital
  * Author URI:		https://misterdigital.es
@@ -83,6 +83,7 @@ namespace AddHierarchyParentToPost
 				
 			</style>
 			<?php } );  
+		add_shortcode('mi_child_pages', [$this, 'mi_child_pages_mod'], 11, 2  );
 		$this->cpt_as_parent_init();
 	}
  
@@ -91,7 +92,60 @@ namespace AddHierarchyParentToPost
 
 
 	
+	public function mi_child_pages_mod() {
+		ob_start();
+	
+		$args = array(
+			'post_type'		=> 'post',
+			'post__not_in'  => array(get_the_ID()),
+			'post_parent'	=> get_the_ID(),
+			'post_status' 	=> 'publish', 
+		);
+			
+	
+		$query = new \WP_Query( $args );
+		//print_r($query);
+		if ( $query->have_posts() ) { 
+			
 		
+			//$count = 0;
+			
+			//$enable_featured_posts = get_theme_mod('asap_enable_featured_posts');
+			echo '<div style="display: flex; flex-wrap: wrap;">';
+				while ( $query->have_posts() ) : $query->the_post(); 
+
+					echo '<article style="flex: 1 0 30%; margin: 1%; box-sizing: border-box;">';
+
+					echo '<a href="' . get_permalink() . '" rel="bookmark">';
+
+					echo '<div class="article-content">';
+
+					if ( has_post_thumbnail() ) {
+						$thumbnail_url = get_the_post_thumbnail_url();
+						echo '<div style="background-image: url(' . $thumbnail_url . ');"></div>';
+					}
+
+					echo '</div>';
+
+					echo '<p class="entry-title">' . get_the_title() . '</p>';
+
+					echo '</a>';
+
+					echo '</article>';
+				endwhile;
+			echo '</div>';
+			?>
+			
+		</div>
+	
+		<?php
+			
+		}
+		
+		wp_reset_postdata();
+		
+		return ob_get_clean();
+	}
 		
 		
 	public function mostrar_migasdepan( $content ) {
@@ -431,7 +485,7 @@ namespace AddHierarchyParentToPost
 	public function alert_if_not_pretty_permalinks()
 	{
 		if( $this->opts['hierarchy_permalinks_too'] &&  !get_option('permalink_structure') ){
-			echo '<script>alert("'. __( 'You have chosen to have hierarchied permalinks for your posts, but at first you have to set correct permalinks in Settings > Permalinks, otherwise it will not work!', 'add-hierarchy-parent-to-post' ).'");</script>';
+			echo '<script>alert("'. __( 'You have chosen to have hierarchied permalinks for your posts, but at first you have to set correct permalinks in Settings > Permalinks, otherwise it will not work!', 'add-parent-to-post' ).'");</script>';
 		}
 	}
  
@@ -468,28 +522,28 @@ namespace AddHierarchyParentToPost
 			}
 			?>
 
-			<?php //_e('(Note: in most cases, who want to have a hierarchy structure for the site, it\'s better to use <code>Custom Post Type</code> (there are other plugins for it), because <code>Custom Post</code> Type has native support for hierarchy and ideally, it\s better then using default <code>Post</code> Type as hierarchy. However, if you are sure you need this our plugin, go on... )', 'add-hierarchy-parent-to-post'); ?>
-			<i><?php _e('(Note: This plugin is experimental in it\'s nature, as it modifies the WordPress query for posts and is not thoroughly integrated in core behavior. So, take this plugin as an experimental plugin.)', 'add-hierarchy-parent-to-post'); ?></i>
+			<?php //_e('(Note: in most cases, who want to have a hierarchy structure for the site, it\'s better to use <code>Custom Post Type</code> (there are other plugins for it), because <code>Custom Post</code> Type has native support for hierarchy and ideally, it\s better then using default <code>Post</code> Type as hierarchy. However, if you are sure you need this our plugin, go on... )', 'add-parent-to-post'); ?>
+			<i><?php _e('(Note: This plugin is experimental in it\'s nature, as it modifies the WordPress query for posts and is not thoroughly integrated in core behavior. So, take this plugin as an experimental plugin.)', 'add-parent-to-post'); ?></i>
 
 			<form class="mainForm" method="post" action="">
 
 			<table class="form-table">
 				<tr class="def hierarchical">
 					<th scope="row">
-						<?php _e('Add Dropdown in Post-Editor', 'add-hierarchy-parent-to-post'); ?>
+						<?php _e('Add Dropdown in Post-Editor', 'add-parent-to-post'); ?>
 					</th>
 					<td>
 						<fieldset>
 							<p class="checkboxes_disabled">
 								<label>
-									<input disabled="disabled" type="radio" value="0" ><?php _e( 'No', 'add-hierarchy-parent-to-post' );?>
+									<input disabled="disabled" type="radio" value="0" ><?php _e( 'No', 'add-parent-to-post' );?>
 								</label>
 								<label>
-									<input disabled="disabled" type="radio" value="1" checked="checked"><?php _e( 'Yes', 'add-hierarchy-parent-to-post' );?>
+									<input disabled="disabled" type="radio" value="1" checked="checked"><?php _e( 'Yes', 'add-parent-to-post' );?>
 								</label>
 							</p>
 							<p class="description">
-							<?php _e('Ability to choose parent page, like on <a href="'.$this->helpers->baseURL.'/assets/media/parent-choose.png" title="sreenshot" target="_blank">this screenshot</a>. Without this field, plugin can\'t work at all, so the option is not changeable. This option guarantees that wordpress native functions can correctly determine the child-parent post relations (So, posts can have "parent" field set in database). However, that doesnt guarentee the HIERARCHIED URLS will work - that is another subject (see below).', 'add-hierarchy-parent-to-post'); ?>
+							<?php _e('Ability to choose parent page, like on <a href="'.$this->helpers->baseURL.'/assets/media/parent-choose.png" title="sreenshot" target="_blank">this screenshot</a>. Without this field, plugin can\'t work at all, so the option is not changeable. This option guarantees that wordpress native functions can correctly determine the child-parent post relations (So, posts can have "parent" field set in database). However, that doesnt guarentee the HIERARCHIED URLS will work - that is another subject (see below).', 'add-parent-to-post'); ?>
 							</p>
 						</fieldset>
 					</td>
@@ -504,18 +558,18 @@ namespace AddHierarchyParentToPost
 				
 				<tr class="def hierarchical">
 					<th scope="row">
-						<?php _e('Enable "Parent Page" capability for other Custom-Post-Types too (if they does not have support already)', 'add-hierarchy-parent-to-post'); ?>
+						<?php _e('Enable "Parent Page" capability for other Custom-Post-Types too (if they does not have support already)', 'add-parent-to-post'); ?>
 					</th>
 					<td <?php //$this->pro_field();?>>
 						<fieldset>
 							<div class="clearboth"></div>
 							<div class="">
 								<label for="custom_post_types">
-									<?php //_e('Add hierarchy to <b>Custom Post Types</b>:', 'add-hierarchy-parent-to-post');?>
+									<?php //_e('Add hierarchy to <b>Custom Post Types</b>:', 'add-parent-to-post');?>
 								</label>
-								<input name="<?php echo $this->plugin_slug;?>[custom_post_types]" id="custom_post_types" class="regular-text" type="text" placeholder="<?php _e('book, fruits, news ...', 'add-hierarchy-parent-to-post');?>" value="<?php echo $this->opts['custom_post_types']; ?>" > 
+								<input name="<?php echo $this->plugin_slug;?>[custom_post_types]" id="custom_post_types" class="regular-text" type="text" placeholder="<?php _e('book, fruits, news ...', 'add-parent-to-post');?>" value="<?php echo $this->opts['custom_post_types']; ?>" > 
 								<p class="description">
-								<?php _e('(You can insert multiple CPT base names, comma delimeted)', 'add-hierarchy-parent-to-post');?>
+								<?php _e('(You can insert multiple CPT base names, comma delimeted)', 'add-parent-to-post');?>
 								</p>
 							</div>
 							
@@ -531,24 +585,24 @@ namespace AddHierarchyParentToPost
 				
 				<tr class="def hierarchical">
 					<th scope="row">
-						<span style="color:red; font-weight:bold;"><?php _e('EXPERIMENTAL!', 'add-hierarchy-parent-to-post');?></span> <br/><?php _e('Use other Custom-Post-Type items in "Parent Page" list on posts edit page (note, that Custom-Post-Type should have "hierarchical" mode)', 'add-hierarchy-parent-to-post'); ?>
+						<span style="color:red; font-weight:bold;"><?php _e('EXPERIMENTAL!', 'add-parent-to-post');?></span> <br/><?php _e('Use other Custom-Post-Type items in "Parent Page" list on posts edit page (note, that Custom-Post-Type should have "hierarchical" mode)', 'add-parent-to-post'); ?>
 					</th>
 					<td <?php //$this->pro_field();?>>
 						<fieldset>
 							<div class="clearboth"></div>
 							<div class="">
 								<label for="other_cpts_as_parent">
-									<?php //_e('Add hierarchy to <b>Custom Post Types</b>:', 'add-hierarchy-parent-to-post');?>
+									<?php //_e('Add hierarchy to <b>Custom Post Types</b>:', 'add-parent-to-post');?>
 								</label>
-								<input name="<?php echo $this->plugin_slug;?>[other_cpts_as_parent]"  class="regular-text" type="text" placeholder="<?php _e('book, fruit, ...', 'add-hierarchy-parent-to-post');?>" value="<?php echo $this->opts['other_cpts_as_parent']; ?>" > 
+								<input name="<?php echo $this->plugin_slug;?>[other_cpts_as_parent]"  class="regular-text" type="text" placeholder="<?php _e('book, fruit, ...', 'add-parent-to-post');?>" value="<?php echo $this->opts['other_cpts_as_parent']; ?>" > 
 								<p class="description">
-								<?php _e('(You can insert multiple CPT base names, comma delimeted. To disable, leave empty)', 'add-hierarchy-parent-to-post');?>
+								<?php _e('(You can insert multiple CPT base names, comma delimeted. To disable, leave empty)', 'add-parent-to-post');?>
 								</p>
 									
 									
 								<p class="description">
-								<br/><?php _e('Enable in gutenberg-editor too', 'add-hierarchy-parent-to-post');?> <input name="<?php echo $this->plugin_slug;?>[other_cpts_as_parent_rest_too]" class="regular-text" type="checkbox" value="1" <?php checked($this->opts['other_cpts_as_parent_rest_too']);?> /> 
-								<?php _e('(This enables Custom-Post-Type to be used in wp-rest-api. This option has not been thoroughly tested if it conflicts any other wp-rest-api query, so use at your own responsibility.)', 'add-hierarchy-parent-to-post');?> 
+								<br/><?php _e('Enable in gutenberg-editor too', 'add-parent-to-post');?> <input name="<?php echo $this->plugin_slug;?>[other_cpts_as_parent_rest_too]" class="regular-text" type="checkbox" value="1" <?php checked($this->opts['other_cpts_as_parent_rest_too']);?> /> 
+								<?php _e('(This enables Custom-Post-Type to be used in wp-rest-api. This option has not been thoroughly tested if it conflicts any other wp-rest-api query, so use at your own responsibility.)', 'add-parent-to-post');?> 
 								</p>
 							</div>
 							
@@ -560,7 +614,7 @@ namespace AddHierarchyParentToPost
 				<tr class="def"> 
 					<td colspan="2">
 						<p class="description">
-							<?php echo sprintf( __( 'Note! Everytime you update settings on this page, you have then to click once "Save" button in the <a href="%s" target="_blank">Permalinks</a> page! Then on the front-end, refresh page once (with clicking <code>Ctrl+F5</code>) and new rules will start work. After that, also check if your link works correctly (feed,rss,attachments and categories).', 'add-hierarchy-parent-to-post' ), (is_network_admin() ? 'javascript:alert(\'You should go to specific sub-site permalink settings\'); void(0);' : admin_url("options-permalink.php"))  ) ;?> 
+							<?php echo sprintf( __( 'Note! Everytime you update settings on this page, you have then to click once "Save" button in the <a href="%s" target="_blank">Permalinks</a> page! Then on the front-end, refresh page once (with clicking <code>Ctrl+F5</code>) and new rules will start work. After that, also check if your link works correctly (feed,rss,attachments and categories).', 'add-parent-to-post' ), (is_network_admin() ? 'javascript:alert(\'You should go to specific sub-site permalink settings\'); void(0);' : admin_url("options-permalink.php"))  ) ;?> 
 						</p>
 					</td>
 				</tr>
@@ -571,7 +625,7 @@ namespace AddHierarchyParentToPost
 			</form>
 
 			<script>
-			PuvoxLibrary.radiobox_onchange_hider('input[name=add-hierarchy-parent-to-post\\[hierarchy_permalinks_too\\]]',  '0',  '.hierarchyMethodDesc');
+			PuvoxLibrary.radiobox_onchange_hider('input[name=add-parent-to-post\\[hierarchy_permalinks_too\\]]',  '0',  '.hierarchyMethodDesc');
 			</script>
 		<?php 
 		}
