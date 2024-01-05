@@ -104,6 +104,16 @@ namespace AddHierarchyParentToPost
 					text-align: center;
 					color: #333;
 				}
+				.titulo-caja-container {
+					text-align: center;
+					width: 100%;
+				}
+
+				.contenido-caja {
+					display: flex;
+					justify-content: center;
+					width: 100%;
+				}
 
 			</style>
 			<?php } );  
@@ -161,26 +171,49 @@ namespace AddHierarchyParentToPost
 		
 			//$count = 0;
 			echo '<div class="caja">';
+			echo '<div class="titulo-caja-container">';
 			echo '<p class="titulo-caja">'.$p['titulo'].'</p>';
+			echo '</div>';
+			
+			echo '<div class="contenido-caja">';
+			$post_count = $query->post_count;
 
-			echo '<div style="display: flex; flex-wrap: wrap;">';
 			while ( $query->have_posts() ) : $query->the_post(); 
 
-				echo '<article style="flex: 1 0 28%; margin: 1%; box-sizing: border-box;">';
+				if ($post_count == 1) {
+					
+					echo '<article style="display: flex; align-items: center; justify-content: center;">';
+					echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none; display: flex;">';
+					if ( has_post_thumbnail() ) {
+						echo '<div style="width: 20%; display: flex; align-items: center;">';
+						$thumbnail_url = get_the_post_thumbnail_url();
+						echo '<img src="' . $thumbnail_url . '" style="width: 100%; max-height: 100px;">';
+						echo '</div>';
+					}
 
-				echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none;">';
-
-				if ( has_post_thumbnail() ) {
-					echo '<div class="imagen-cluster">';
-					$thumbnail_url = get_the_post_thumbnail_url();
-					echo '<div style="background-image: url(' . $thumbnail_url . '); width: 100%; height: 196px;"></div>';
+					echo '<div style="width: 80%; display: flex; align-items: center;">';
+					echo '<p class="titulo-cluster" style="text-align: left; padding-left: 5px;">' . get_the_title() . '</p>';
 					echo '</div>';
+					echo '</a>';
+					echo '</article>';
+				} else {
+					echo '<article style="flex: 1 0 28%; margin: 1%; box-sizing: border-box;">';
+
+					echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none;">';
+
+					if ( has_post_thumbnail() ) {
+						echo '<div class="imagen-cluster">';
+						$thumbnail_url = get_the_post_thumbnail_url();
+						echo '<div style="background-image: url(' . $thumbnail_url . '); width: 100%; height: 196px;"></div>';
+						echo '</div>';
+					}
+
+					echo '<p class="titulo-cluster" style="text-align: center;">' . get_the_title() . '</p>';
+					echo '</a>';
+					echo '</article>';
 				}
 
-				echo '<p class="titulo-cluster" style="text-align: center;">' . get_the_title() . '</p>';
-				echo '</a>';
-
-				echo '</article>';
+				
 			endwhile;
 			echo '</div>';
 
