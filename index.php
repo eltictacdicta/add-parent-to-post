@@ -79,8 +79,31 @@ namespace AddHierarchyParentToPost
 				.migasdepan .last{
 					font-weight: bold;
 				}
-			
-				
+				.imagen-cluster {
+					display: block;
+					margin-bottom: 10px!important;
+					position: relative;
+					line-height: 0;
+					text-align: center;
+					overflow: hidden;
+				}
+				.titulo-cluster {
+					font-size: 1.2em;
+					margin-bottom: 10px!important;
+				}
+				.caja {
+					border: 1px solid #ccc;
+					padding: 20px;
+					margin-bottom: 20px;
+					background-color: #f9f9f9;
+				}
+
+				.titulo-caja {
+					font-size: 1.5em;
+					margin-bottom: 20px;
+					text-align: center;
+					color: #333;
+				}
 			</style>
 			<?php } );  
 		add_shortcode('mi_child_pages', [$this, 'mi_child_pages_mod'], 11, 2  );
@@ -109,31 +132,31 @@ namespace AddHierarchyParentToPost
 			
 		
 			//$count = 0;
-			
-			//$enable_featured_posts = get_theme_mod('asap_enable_featured_posts');
+			echo '<div class="caja">';
+			echo '<p class="titulo-caja">Subcategorías</p>';
+
 			echo '<div style="display: flex; flex-wrap: wrap;">';
-				while ( $query->have_posts() ) : $query->the_post(); 
+			while ( $query->have_posts() ) : $query->the_post(); 
 
-					echo '<article style="flex: 1 0 30%; margin: 1%; box-sizing: border-box;">';
+				echo '<article style="flex: 1 0 28%; margin: 1%; box-sizing: border-box;">';
 
-					echo '<a href="' . get_permalink() . '" rel="bookmark">';
+				echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none;">';
 
-					echo '<div class="article-content">';
-
-					if ( has_post_thumbnail() ) {
-						$thumbnail_url = get_the_post_thumbnail_url();
-						echo '<div style="background-image: url(' . $thumbnail_url . ');"></div>';
-					}
-
+				if ( has_post_thumbnail() ) {
+					echo '<div class="imagen-cluster">';
+					$thumbnail_url = get_the_post_thumbnail_url();
+					echo '<div style="background-image: url(' . $thumbnail_url . '); width: 100%; height: 196px;"></div>';
 					echo '</div>';
+				}
 
-					echo '<p class="entry-title">' . get_the_title() . '</p>';
+				echo '<p class="titulo-cluster" style="text-align: center;">' . get_the_title() . '</p>';
+				echo '</a>';
 
-					echo '</a>';
-
-					echo '</article>';
-				endwhile;
+				echo '</article>';
+			endwhile;
 			echo '</div>';
+
+			echo '</div>'; // Fin de .caja
 			?>
 			
 		</div>

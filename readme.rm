@@ -7,6 +7,7 @@ Este plugin es una modificación del plugin original [Add Hierarchy (parent) to 
 - Añadida la funcionalidad de búsqueda en el selector para facilitar la selección de la jerarquía padre.
 - No permite que por defecto crear permalinks gerarquicos, una cosa que me ha traido mas de un dolor de cabeza.
 - Añade migas de pan automaticamete. Compatible con Rank Math y con Yoast Seo
+- En la página principal con el [shotcode mi_child_pages] puedes listar todas la páginas hijas
 
 ## Librerías utilizadas
 
