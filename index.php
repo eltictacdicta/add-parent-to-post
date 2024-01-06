@@ -114,6 +114,15 @@ namespace AddHierarchyParentToPost
 					justify-content: center;
 					width: 100%;
 				}
+				@media screen and (max-width: 600px) {
+					article {
+						flex: 1 0 100% !important;
+						}
+					.contenido-caja {
+						flex-direction: column;
+					}
+				}
+				
 
 			</style>
 			<?php } );  
