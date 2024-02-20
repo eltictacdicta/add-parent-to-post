@@ -96,6 +96,7 @@ namespace AddHierarchyParentToPost
 					padding: 20px;
 					margin-bottom: 20px;
 					background-color: #f9f9f9;
+					width: 100%;
 				}
 
 				.titulo-caja {
@@ -113,13 +114,13 @@ namespace AddHierarchyParentToPost
 					display: flex;
 					justify-content: center;
 					width: 100%;
+					flex-wrap: wrap;
 				}
+				
+
 				@media screen and (max-width: 600px) {
-					article {
-						flex: 1 0 100% !important;
-						}
-					.contenido-caja {
-						flex-direction: column;
+					.contenido-caja article {
+						flex: 1 0 100%;
 					}
 				}
 				
@@ -163,35 +164,28 @@ namespace AddHierarchyParentToPost
 	public function mi_child_pages_mod($atts) {
 		ob_start();
 		$p = shortcode_atts( array (
-            'titulo' => ' Tambien te puede interesar:',
-        ), $atts );
+			'titulo' => ' Tambien te puede interesar:',
+		), $atts );
 		$args = array(
-			'post_type'		=> 'post',
+			'post_type'     => 'post',
 			'post__not_in'  => array(get_the_ID()),
-			'post_parent'	=> get_the_ID(),
-			'post_status' 	=> 'publish', 
+			'post_parent'   => get_the_ID(),
+			'post_status'   => 'publish', 
 		);
-			
-	
+
 		$query = new \WP_Query( $args );
-		//print_r($query);
 		if ( $query->have_posts() ) { 
-			
-		
-			//$count = 0;
 			echo '<div class="caja">';
 			echo '<div class="titulo-caja-container">';
 			echo '<p class="titulo-caja">'.$p['titulo'].'</p>';
 			echo '</div>';
-			
-			echo '<div class="contenido-caja">';
+
+			echo '<div class="contenido-caja" style="display: flex; flex-wrap: wrap;">';
 			$post_count = $query->post_count;
 
 			while ( $query->have_posts() ) : $query->the_post(); 
-
 				if ($post_count == 1) {
-					
-					echo '<article style="display: flex; align-items: center; justify-content: center;">';
+					echo '<article style="display: flex; align-items: center; justify-content: center; flex: 1 0 100%;">';
 					echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none; display: flex;">';
 					if ( has_post_thumbnail() ) {
 						echo '<div style="width: 20%; display: flex; align-items: center;">';
@@ -206,10 +200,8 @@ namespace AddHierarchyParentToPost
 					echo '</a>';
 					echo '</article>';
 				} else {
-					echo '<article style="flex: 1 0 28%; margin: 1%; box-sizing: border-box;">';
-
+					echo '<article style="flex: 1 0 calc(33.33% - 2%); margin: 1%; box-sizing: border-box;">';
 					echo '<a href="' . get_permalink() . '" rel="bookmark" style="text-decoration: none;">';
-
 					if ( has_post_thumbnail() ) {
 						echo '<div class="imagen-cluster">';
 						$thumbnail_url = get_the_post_thumbnail_url();
@@ -221,18 +213,10 @@ namespace AddHierarchyParentToPost
 					echo '</a>';
 					echo '</article>';
 				}
-
-				
 			endwhile;
-			echo '</div>';
+			echo '</div>'; // Fin de .contenido-caja
 
 			echo '</div>'; // Fin de .caja
-			?>
-			
-		</div>
-	
-		<?php
-			
 		}
 		
 		wp_reset_postdata();
