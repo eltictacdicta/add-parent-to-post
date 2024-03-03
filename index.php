@@ -162,6 +162,9 @@ namespace AddHierarchyParentToPost
 
 	
 	public function mi_child_pages_mod($atts) {
+		if (is_admin()) {
+			return;
+		}
 		ob_start();
 		$p = shortcode_atts( array (
 			'titulo' => ' Tambien te puede interesar:',
@@ -214,12 +217,13 @@ namespace AddHierarchyParentToPost
 					echo '</article>';
 				}
 			endwhile;
+			wp_reset_postdata();
 			echo '</div>'; // Fin de .contenido-caja
 
 			echo '</div>'; // Fin de .caja
 		}
 		
-		wp_reset_postdata();
+
 		
 		return ob_get_clean();
 	}
