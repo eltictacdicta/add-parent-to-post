@@ -21,9 +21,53 @@
 namespace Puvox;
 
 
-if (!class_exists('\\Puvox\\library_wp')) {
   class library_wp extends library
   {
+	public $BLOGSLUG;
+	public $ip;
+    public $isMobile;
+    public $isWP;
+    public $is_cli;
+    public $is_development;
+    public $is_https;
+    public $https;
+    public $domainCurrent;
+    public $domain;
+    public $requestURL;
+    public $requestURI;
+    public $currentURL;
+    public $domainCurrentWithoutPort;
+    public $is_localhost;
+    public $empty_image;
+    public $extra_options_enabled;
+    public $module_NAMESPACE;
+    public $moduleFILE;
+    public $moduleDIR;
+    public $prefix;
+    public $prefix_;
+    public $wpURL;
+    public $wpFOLDER;
+    public $homeURL;
+    public $homeFOLDER;
+    public $moduleURL;
+    public $plugin_entryfile;
+    public $httpsReal;
+    public $domainReal;
+    public $domainNaked;
+    public $domain_schemeless;
+    public $siteslug;
+    public $urlAfterHome;
+    public $pathAfterHome;
+    public $homeUrlStripped;
+    public $baseFILE;
+    public $baseDIR;
+    public $baseURL;
+    public $baseScriptsFolder;
+    public $baseScriptsDir;
+    public $baseScriptsUrl;
+    public $changeable_JS_CSS_version;
+    public $this_file_link;
+    public $PHP_customCALL;
 	  
 	public function __construct()
 	{
@@ -2407,7 +2451,7 @@ if (!class_exists('\\Puvox\\library_wp')) {
 	} 
 
 
-}} // class
+} // class
 
 
 
@@ -2428,9 +2472,6 @@ if (!class_exists('\\Puvox\\library_wp')) {
 
 
 
-
-#region WP_PLUGIN class
-if (! class_exists('\\Puvox\\wp_plugin')) {
 
 //============================================================================================
 //================================== Main base for WP plugin =================================
@@ -4275,7 +4316,7 @@ class wp_plugin_pro extends wp_plugin
   #endregion  ---------------  [ PRO-parts ] --------------- #
 
 
-} // #NAMESPACE
+// #NAMESPACE
 // ===================================================================
 // ======================      ### WP codes     ======================
 // ===================================================================

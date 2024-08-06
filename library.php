@@ -21,15 +21,56 @@
 
 namespace Puvox;
 
-if (!class_exists('\\Puvox\\library')) 
-{
+
   class library
   {
-	public function __construct()
-	{ 
+	// Define class properties
+	public $ip;
+	public $isMobile;
+	public $isWP;
+	public $is_cli;
+	public $is_development;
+	public $is_https;
+	public $https;
+	public $domainCurrent;
+	public $domain;
+	public $requestURL;
+	public $requestURI;
+	public $currentURL;
+	public $domainCurrentWithoutPort;
+	public $is_localhost;
+	public $empty_image;
+	public $extra_options_enabled;
+	public $module_NAMESPACE;
+	public $moduleFILE;
+	public $moduleDIR;
+	public $prefix;
+	public $prefix_;
+	public $wpURL;
+	public $wpFOLDER;
+	public $homeURL;
+	public $homeFOLDER;
+	public $moduleURL;
+	public $plugin_entryfile;
+	public $httpsReal;
+	public $domainReal;
+	public $domainNaked;
+	public $domain_schemeless;
+	public $siteslug;
+	public $urlAfterHome;
+	public $pathAfterHome;
+	public $homeUrlStripped;
+	public $baseFILE;
+	public $baseDIR;
+	public $baseURL;
+	public $baseScriptsFolder;
+	public $baseScriptsDir;
+	public $baseScriptsUrl;
+	public $changeable_JS_CSS_version;
+
+	public function __construct() {
 		$this->init_defaults();
 	}
-	
 	public function constantX($val)           { return (defined($val) ? constant($val) : (!is_null($val) ? $val : false ) );}
 	public function property($propertyName)   { return property_exists($this, $propertyName) ? $this->{$propertyName} : null; }
 	public function print_r($obj,$silent=true){ return print_r($obj, $silent); }
@@ -5464,4 +5505,3 @@ if (!class_exists('\\Puvox\\library'))
 
 
   }
-} // class
