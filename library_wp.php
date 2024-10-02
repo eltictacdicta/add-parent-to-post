@@ -23,52 +23,14 @@ namespace Puvox;
 
   class library_wp extends library
   {
-	public $BLOGSLUG;
-	public $ip;
-    public $isMobile;
-    public $isWP;
-    public $is_cli;
-    public $is_development;
-    public $is_https;
-    public $https;
-    public $domainCurrent;
-    public $domain;
-    public $requestURL;
-    public $requestURI;
-    public $currentURL;
-    public $domainCurrentWithoutPort;
-    public $is_localhost;
-    public $empty_image;
-    public $extra_options_enabled;
-    public $module_NAMESPACE;
-    public $moduleFILE;
-    public $moduleDIR;
-    public $prefix;
-    public $prefix_;
-    public $wpURL;
-    public $wpFOLDER;
-    public $homeURL;
-    public $homeFOLDER;
-    public $moduleURL;
-    public $plugin_entryfile;
-    public $httpsReal;
-    public $domainReal;
-    public $domainNaked;
-    public $domain_schemeless;
-    public $siteslug;
-    public $urlAfterHome;
-    public $pathAfterHome;
-    public $homeUrlStripped;
-    public $baseFILE;
-    public $baseDIR;
-    public $baseURL;
-    public $baseScriptsFolder;
-    public $baseScriptsDir;
-    public $baseScriptsUrl;
-    public $changeable_JS_CSS_version;
+	// Declare the properties
+    public $BLOGSLUG;
     public $this_file_link;
     public $PHP_customCALL;
-	  
+    public $slug;
+    public $plugin_slug;
+    public $plugin_slug_u;
+    public $plugin_files = []; // Ensure plugin_files is always an array
 	public function __construct()
 	{
 		parent::__construct();
@@ -2533,7 +2495,12 @@ namespace Puvox;
 
 		$this->plugin_page_url .= ( !empty($this->static_settings['custom_opts_page']) ?  $this->static_settings['custom_opts_page'] : $this->settingsPHP_page_dynamic.'?page='.$this->slug); 
 
-		$this->plugin_files		= array_merge( (property_exists($this, 'plugin_files') ? $this->plugin_files : [] ),   ['index.php'] );
+		// Ensure that $this->plugin_files is always an array
+		if (!property_exists($this, 'plugin_files') || !is_array($this->plugin_files)) {
+			$this->plugin_files = [];
+		}
+
+		$this->plugin_files = array_merge($this->plugin_files, ['index.php']);
 		$this->translation_phrases= $this->get_phrases();
 		$this->is_in_customizer	= (stripos($this->helpers->currentURL, admin_url('customize.php')) !== false);
 		$this->myplugin_class	= 'myplugin puvox_plugin postbox version_'. (!$this->static_settings['has_pro_version']  ? "free" : ($this->is_pro_legal ? "pro" : "not_pro") );
