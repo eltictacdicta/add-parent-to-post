@@ -18,7 +18,7 @@
 
 
  
-namespace Puvox;
+namespace AddHierarchyParentToPost;
 
 
   class library_wp extends library
