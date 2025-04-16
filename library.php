@@ -5022,7 +5022,9 @@ namespace Puvox;
 				}
 			}
 		}
-		if($current_screen=="admin")
+		$screen = get_current_screen();
+
+		if (is_admin() && $screen && $screen->base === 'post')
 		{
 			echo '
 			<link

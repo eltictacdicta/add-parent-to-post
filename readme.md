@@ -11,7 +11,7 @@ Este plugin es una modificación del plugin original [Add Hierarchy (parent) to 
 
 ## Librerías utilizadas
 
-- [Choices.js](https://github.com/Choices-js/Choices): Esta librería se utiliza para mejorar la funcionalidad del selector, permitiendo la búsqueda dentro del mismo.
+- [Nice Select 2](https://bluzky.github.io/nice-select2/): Esta librería liviana de JavaScript se utiliza para mejorar la funcionalidad del selector, permitiendo la búsqueda dentro del mismo.
 
 ## Cómo usar
 
